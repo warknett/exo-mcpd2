@@ -1,4 +1,4 @@
-    // Attributs non statiques
+    // Attributs 
     private string nom;
     private string race;
     private int age;
