@@ -59,28 +59,28 @@
     }
 }
 
-        // Création de deux chiens
-        Chien chien1 = new Chien("Akamaru", "Chihuahua", 5);
-        Chien chien2 = new Chien("Pakkun", "ninken", 3);
+    // Création de deux chiens
+    Chien chien1 = new Chien("Akamaru", "Chihuahua", 5);
+    Chien chien2 = new Chien("Pakkun", "ninken", 3);
 
-        // Modification du premier chien via les setters
-        chien1.SetNom("Rocky balboa");
-        chien1.SetRace("Husky");
-        chien1.SetAge(4);
+     // Modification du premier chien via les setters
+    chien1.SetNom("Rocky balboa");
+     chien1.SetRace("Husky");
+    chien1.SetAge(4);
 
-        // Affichage des deux chiens
-        Console.WriteLine(chien1.ToStringChien());
-        Console.WriteLine(chien2.ToStringChien());
+    // Affichage des deux chiens
+     Console.WriteLine(chien1.ToStringChien());
+    Console.WriteLine(chien2.ToStringChien());
 
-        // Modification du nom du chenil (statique)
-        Chien.nomDuChenil = "Nouveau Chenil Royal";
+    // Modification du nom du chenil (statique)
+     Chien.nomDuChenil = "Nouveau Chenil Royal";
 
-        // Réaffichage pour voir le changement
-        Console.WriteLine("\nAprès changement du nom du chenil :");
-        Console.WriteLine(chien1.ToStringChien());
-        Console.WriteLine(chien2.ToStringChien());
+    // Réaffichage pour voir le changement
+    Console.WriteLine("\nAprès changement du nom du chenil :");
+    Console.WriteLine(chien1.ToStringChien());
+    Console.WriteLine(chien2.ToStringChien());
 
-        // Affichage du nombre total de chiens
-        Console.WriteLine("\nNombre total de chiens : " + Chien.nbChiens);
+    // Affichage du nombre total de chiens
+    Console.WriteLine("\nNombre total de chiens : " + Chien.nbChiens);
     }
 }
