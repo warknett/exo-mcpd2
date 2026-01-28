@@ -1,0 +1,57 @@
+        Nom = nom;
+        Service = service;
+        Salaire = salaire;
+
+        // Mise à jour des champs statiques
+        nombreEmployes++;
+        salaireTotal += salaire;
+    }
+
+    // Méthode d'instance
+    public void AfficherSalaire()
+    {
+        Console.WriteLine($"Le salaire de {Nom} est de {Salaire} euros.");
+    }
+
+    // Méthodes statiques
+    public static int GetNombreEmployes()
+    {
+        return nombreEmployes;
+    }
+
+    public static double GetSalaireTotal()
+    {
+        return salaireTotal;
+    }
+
+    public static void ResetEmployes()
+    {
+        nombreEmployes = 0;
+        salaireTotal = 0;
+    }
+}
+
+        // Création des salariés
+        Salarie s1 = new Salarie("Chloé", "RH", 24000);
+        Salarie s2 = new Salarie("Pierre", "IT", 30000);
+        Salarie s3 = new Salarie("Sam", "Compta", 36000);
+
+        // Affichage des salaires individuels
+        s1.AfficherSalaire();
+        s2.AfficherSalaire();
+        s3.AfficherSalaire();
+
+        // Affichage du total
+        Console.WriteLine(
+            $"Le montant total des salaires des {Salarie.GetNombreEmployes()} employés est de {Salarie.GetSalaireTotal()} euros."
+        );
+
+        // Reset
+        Salarie.ResetEmployes();
+        Console.WriteLine(
+            $"Il y a {Salarie.GetNombreEmployes()} employé dans l'entreprise (après reset)."
+        );
+
+        Console.ReadLine();
+    }
+}
