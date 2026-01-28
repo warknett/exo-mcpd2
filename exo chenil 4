@@ -1,0 +1,86 @@
+    // Attributs non statiques
+    private string nom;
+    private string race;
+    private int age;
+
+    // Attributs statiques
+    public static string nomDuChenil = "Chenil des Montagnes";
+    public static int nbChiens = 0;
+
+    // Constructeur
+    public Chien(string nom, string race, int age)
+    {
+        this.nom = nom;
+        this.race = race;
+        this.age = age;
+
+        nbChiens++; // On incrémente le nombre total de chiens
+    }
+
+    // Getters
+    public string GetNom()
+    {
+        return nom;
+    }
+
+    public string GetRace()
+    {
+        return race;
+    }
+
+    public int GetAge()
+    {
+        return age;
+    }
+
+    // Setters
+    public void SetNom(string nom)
+    {
+        this.nom = nom;
+    }
+
+    public void SetRace(string race)
+    {
+        this.race = race;
+    }
+
+    public void SetAge(int age)
+    {
+        this.age = age;
+    }
+
+    // Méthode toString
+    public string ToStringChien()
+    {
+        return "Nom : " + GetNom() +
+               ", Race : " + GetRace() +
+               ", Âge : " + GetAge() +
+               ", Chenil : " + nomDuChenil;
+    }
+}
+
+        // Création de deux chiens
+        Chien chien1 = new Chien("Akamaru", "Chihuahua", 5);
+        Chien chien2 = new Chien("Pakkun", "ninken", 3);
+
+        // Modification du premier chien via les setters
+        chien1.SetNom("Rocky balboa");
+        chien1.SetRace("Husky");
+        chien1.SetAge(4);
+
+        // Affichage des deux chiens
+        Console.WriteLine(chien1.ToStringChien());
+        Console.WriteLine(chien2.ToStringChien());
+
+        // Modification du nom du chenil (statique)
+        Chien.nomDuChenil = "Nouveau Chenil Royal";
+
+        // Réaffichage pour voir le changement
+        Console.WriteLine("\nAprès changement du nom du chenil :");
+        Console.WriteLine(chien1.ToStringChien());
+        Console.WriteLine(chien2.ToStringChien());
+
+        // Affichage du nombre total de chiens
+        Console.WriteLine("\nNombre total de chiens : " + Chien.nbChiens);
+    }
+}
