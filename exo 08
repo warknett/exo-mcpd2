@@ -1,0 +1,110 @@
+class CompteBancaire
+{
+    public string titulaire;
+    public float solde;
+    public string devise;
+
+    public CompteBancaire(string titulaire, float solde, string devise)
+    {
+        this.titulaire = titulaire;
+        this.solde = solde;
+        this.devise = devise;
+    }
+
+    public void deposer(float montant)
+    {
+        solde += montant;
+        Console.WriteLine("Depot de " + montant + " " + devise);
+
+    }
+
+    public void retirer(float montant)
+    {
+        if (solde >= montant)
+        {
+            solde -= montant;
+            Console.WriteLine("Retrait de " + montant + " " + devise);
+
+        }
+        else
+        {
+            Console.WriteLine("Solde insufissant !");
+        }
+    }
+
+    public void afficherSolde()
+    {
+        Console.WriteLine("Solde de " + titulaire + " : " + solde + " " + devise);
+
+    }
+}
+
+class CompteEpargne : CompteBancaire
+{
+    public float tauxInteret;
+    public CompteEpargne(string titulaire, float solde, string devise, float tauxInteret)
+        : base(titulaire, solde, devise)
+    {
+        this.tauxInteret = tauxInteret;
+    }
+
+    public void calculerInteret()
+    {
+        float interets = solde * tauxInteret;
+        solde += interets;
+        Console.WriteLine("Interets ajoutés :" + interets + " " + devise);
+    }
+}
+
+class CompteCourant : CompteBancaire
+{
+    public float decouvertAutorise;
+
+    public CompteCourant(string titulaire, float solde, string devise, float decouvertAutorise)
+        : base(titulaire, solde, devise)
+    {
+        this.decouvertAutorise = decouvertAutorise;
+    }
+
+   public void retirerAvecDecouvert(float montant)
+    {
+        if (solde + decouvertAutorise >= montant)
+        {
+            solde -= montant;
+            Console.WriteLine("Retrait avec découvert de " + montant + " " + devise);
+        }
+        else
+        {
+            Console.WriteLine("Montant dépasse le découvert autorisé !");
+        }
+    }
+}
+
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Compte bancaire simple
+        CompteBancaire compte = new CompteBancaire("Tom", 100, "euros");
+        compte.deposer(50);
+        compte.retirer(30);
+        compte.afficherSolde();
+
+        Console.WriteLine("----------------------");
+
+        // Compte épargne
+        CompteEpargne compteEpargne = new CompteEpargne("Kakashi", 200, "euros", 0.05f);
+        compteEpargne.deposer(100);
+        compteEpargne.calculerInteret();
+        compteEpargne.afficherSolde();
+
+        Console.WriteLine("----------------------");
+
+        // Compte courant
+        CompteCourant compteCourant = new CompteCourant("Sakura", 50, "euros", 100);
+        compteCourant.deposer(20);
+        compteCourant.retirerAvecDecouvert(120);
+        compteCourant.afficherSolde();
+    }
+}
