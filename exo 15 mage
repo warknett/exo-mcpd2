@@ -1,0 +1,186 @@
+public class Arme
+{
+    public string Nom { get; set; }
+    public int DegatSupplementaire { get; set; }
+    public int Durabilite { get; set; }
+
+    public Arme(string nom, int degatSup, int durabilite)
+    {
+        Nom = nom;
+        DegatSupplementaire = degatSup;
+        Durabilite = durabilite;
+    }
+
+    public void Utiliser()
+    {
+        if (Durabilite > 0)
+            Durabilite--;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nom} (+{DegatSupplementaire} dmg, Durabilité : {Durabilite})";
+    }
+}
+
+
+public abstract class Personnage
+{
+    public string Nom { get; set; }
+    public string Prenom { get; set; }
+    public int Pv { get; set; }
+    public int Damage { get; set; }
+    public Arme Arme { get; set; }
+
+    public Personnage(string nom, string prenom, int pv, int damage, Arme arme)
+    {
+        Nom = nom;
+        Prenom = prenom;
+        Pv = pv;
+        Damage = damage;
+        Arme = arme;
+    }
+
+    public abstract void Attaquer(Personnage cible);
+
+    public override string ToString()
+    {
+        return $"{Prenom} {Nom} | PV : {Pv} | Dégâts : {Damage} | Arme : {Arme}";
+    }
+}
+
+public interface IAttaqueSpeciale
+{
+    void AttaqueSpeciale(Personnage cible);
+}
+
+public interface IMagie
+{
+    void LancerSort(Personnage cible);
+}
+
+using System;
+
+public class Guerrier : Personnage, IAttaqueSpeciale
+{
+    public Guerrier(string nom, string prenom, int pv, int damage, Arme arme)
+        : base(nom, prenom, pv, damage, arme)
+    {
+    }
+
+    public override void Attaquer(Personnage cible)
+    {
+        int totalDamage = Damage + Arme.DegatSupplementaire;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} attaque {cible.Prenom} avec {Arme.Nom} et inflige {totalDamage} dégâts !");
+    }
+
+    public void AttaqueSpeciale(Personnage cible)
+    {
+        int totalDamage = (Damage + Arme.DegatSupplementaire) * 2;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} utilise une ATTAQUE SPÉCIALE sur {cible.Prenom} et inflige {totalDamage} dégâts !");
+    }
+}
+
+using System;
+
+public class Mage : Personnage, IMagie
+{
+    public Mage(string nom, string prenom, int pv, int damage, Arme arme)
+        : base(nom, prenom, pv, damage, arme)
+    {
+    }
+
+    public override void Attaquer(Personnage cible)
+    {
+        int totalDamage = Damage + Arme.DegatSupplementaire;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} lance une attaque magique sur {cible.Prenom} et inflige {totalDamage} dégâts !");
+    }
+
+    public void LancerSort(Personnage cible)
+    {
+        int totalDamage = (Damage + Arme.DegatSupplementaire) + 10;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} lance un SORT puissant sur {cible.Prenom} et inflige {totalDamage} dégâts !");
+    }
+}
+
+
+using System;
+
+public class GuerrierMage : Personnage, IAttaqueSpeciale, IMagie
+{
+    public GuerrierMage(string nom, string prenom, int pv, int damage, Arme arme)
+        : base(nom, prenom, pv, damage, arme)
+    {
+    }
+
+    public override void Attaquer(Personnage cible)
+    {
+        int totalDamage = Damage + Arme.DegatSupplementaire;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} attaque (hybride) {cible.Prenom} et inflige {totalDamage} dégâts !");
+    }
+
+    public void AttaqueSpeciale(Personnage cible)
+    {
+        int totalDamage = (Damage + Arme.DegatSupplementaire) * 2;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} utilise une ATTAQUE SPÉCIALE hybride sur {cible.Prenom} !");
+    }
+
+    public void LancerSort(Personnage cible)
+    {
+        int totalDamage = (Damage + Arme.DegatSupplementaire) + 15;
+        cible.Pv -= totalDamage;
+        Arme.Utiliser();
+
+        Console.WriteLine($"{Prenom} lance un SORT hybride sur {cible.Prenom} !");
+    }
+}
+
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Arme epee = new Arme("Épée", 5, 5);
+        Arme baton = new Arme("Bâton magique", 3, 5);
+        Arme lameRunique = new Arme("Lame Runique", 7, 5);
+
+        Guerrier g = new Guerrier("Armagedon", "Arthur", 100, 10, epee);
+        Mage m = new Mage("Olorin", "Gandalf", 80, 8, baton);
+        GuerrierMage gm = new GuerrierMage("Kal", "Ablugor", 120, 12, lameRunique);
+
+        Console.WriteLine(g);
+        Console.WriteLine(m);
+        Console.WriteLine(gm);
+
+        Console.WriteLine("\n--- COMBAT ---\n");
+
+        g.Attaquer(m);
+        m.LancerSort(g);
+        gm.Attaquer(g);
+        gm.AttaqueSpeciale(m);
+
+        Console.WriteLine("\n--- ÉTAT FINAL ---\n");
+        Console.WriteLine(g);
+        Console.WriteLine(m);
+        Console.WriteLine(gm);
+    }
+}
