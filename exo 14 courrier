@@ -1,0 +1,203 @@
+public class Adresse
+{
+    public int NumeroRue { get; set; }
+    public string NomRue { get; set; }
+    public string Ville { get; set; }
+    public string CodePostal { get; set; }
+
+    public Adresse(int numeroRue, string nomRue, string ville, string codePostal)
+    {
+        NumeroRue = numeroRue;
+        NomRue = nomRue;
+        Ville = ville;
+        CodePostal = codePostal;
+    }
+
+    public override string ToString()
+    {
+        return $"{NumeroRue} {NomRue}, {CodePostal} {Ville}";
+    }
+}
+
+public class User
+{
+    public string Nom { get; set; }
+    public string Prenom { get; set; }
+    public Adresse Adresse { get; set; }
+
+    public User(string nom, string prenom, Adresse adresse)
+    {
+        Nom = nom;
+        Prenom = prenom;
+        Adresse = adresse;
+    }
+
+    public override string ToString()
+    {
+        return $"{Prenom} {Nom}\nAdresse : {Adresse}";
+    }
+}
+
+
+public class Lettre
+{
+    public User Expediteur { get; set; }
+    public User Destinataire { get; set; }
+    public string Contenu { get; set; }
+    public string Statut { get; set; }
+
+    public Lettre(User expediteur, User destinataire, string contenu)
+    {
+        Expediteur = expediteur;
+        Destinataire = destinataire;
+        Contenu = contenu;
+        Statut = "En attente";   // statut par défaut
+    }
+
+    public void Envoyer()
+    {
+        Statut = "Envoyée";
+    }
+
+    public void Lire()
+    {
+        Statut = "Lue";
+    }
+
+    public override string ToString()
+    {
+        return
+            "--- LETTRE ---\n" +
+            $"Expéditeur : {Expediteur}\n" +
+            $"Destinataire : {Destinataire}\n" +
+            $"Contenu : {Contenu}\n" +
+            $"Statut : {Statut}\n";
+    }
+}
+
+class Program
+{
+    static List<User> utilisateurs = new List<User>();
+    static List<Lettre> lettres = new List<Lettre>();
+
+    static void Main(string[] args)
+    {
+        bool continuer = true;
+
+        while (continuer)
+        {
+            Console.WriteLine("\n--- MENU ---");
+            Console.WriteLine("1. Créer un utilisateur");
+            Console.WriteLine("2. Rédiger une lettre");
+            Console.WriteLine("3. Envoyer une lettre");
+            Console.WriteLine("4. Lire une lettre");
+            Console.WriteLine("5. Afficher une lettre");
+            Console.WriteLine("0. Quitter");
+
+            string choix = Console.ReadLine();
+
+            switch (choix)
+            {
+                case "1": CreerUtilisateur(); break;
+                case "2": RedigerLettre(); break;
+                case "3": EnvoyerLettre(); break;
+                case "4": LireLettre(); break;
+                case "5": AfficherLettre(); break;
+                case "0": continuer = false; break;
+                default: Console.WriteLine("Choix invalide"); break;
+            }
+        }
+    }
+
+    static void CreerUtilisateur()
+    {
+        Console.Write("Nom : ");
+        string nom = Console.ReadLine();
+
+        Console.Write("Prénom : ");
+        string prenom = Console.ReadLine();
+
+        Console.Write("Numéro de rue : ");
+        int numero = int.Parse(Console.ReadLine());
+
+        Console.Write("Nom de rue : ");
+        string rue = Console.ReadLine();
+
+        Console.Write("Ville : ");
+        string ville = Console.ReadLine();
+
+        Console.Write("Code postal : ");
+        string cp = Console.ReadLine();
+
+        Adresse adresse = new Adresse(numero, rue, ville, cp);
+        User user = new User(nom, prenom, adresse);
+
+        utilisateurs.Add(user);
+
+        Console.WriteLine("Utilisateur créé !");
+    }
+
+    static void RedigerLettre()
+    {
+        Console.WriteLine("Choisir l'expéditeur (index) :");
+        AfficherUtilisateurs();
+        int exp = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Choisir le destinataire (index) :");
+        AfficherUtilisateurs();
+        int dest = int.Parse(Console.ReadLine());
+
+        Console.Write("Contenu de la lettre : ");
+        string contenu = Console.ReadLine();
+
+        Lettre lettre = new Lettre(utilisateurs[exp], utilisateurs[dest], contenu);
+        lettres.Add(lettre);
+
+        Console.WriteLine("Lettre créée !");
+    }
+
+    static void EnvoyerLettre()
+    {
+        Console.WriteLine("Choisir la lettre à envoyer (index) :");
+        AfficherLettres();
+        int index = int.Parse(Console.ReadLine());
+
+        lettres[index].Envoyer();
+        Console.WriteLine("Lettre envoyée !");
+    }
+
+    static void LireLettre()
+    {
+        Console.WriteLine("Choisir la lettre à lire (index) :");
+        AfficherLettres();
+        int index = int.Parse(Console.ReadLine());
+
+        lettres[index].Lire();
+        Console.WriteLine("Lettre lue !");
+    }
+
+    static void AfficherLettre()
+    {
+        Console.WriteLine("Choisir la lettre à afficher (index) :");
+        AfficherLettres();
+        int index = int.Parse(Console.ReadLine());
+
+        Console.WriteLine(lettres[index]);
+    }
+
+    static void AfficherUtilisateurs()
+    {
+        for (int i = 0; i < utilisateurs.Count; i++)
+        {
+            Console.WriteLine($"{i} : {utilisateurs[i].Prenom} {utilisateurs[i].Nom}");
+        }
+    }
+
+    static void AfficherLettres()
+    {
+        for (int i = 0; i < lettres.Count; i++)
+        {
+            Console.WriteLine($"{i} : Lettre de {lettres[i].Expediteur.Prenom} à {lettres[i].Destinataire.Prenom} ({lettres[i].Statut})");
+        }
+    }
+}
