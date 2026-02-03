@@ -1,0 +1,45 @@
+class Program
+{
+    static void Main()
+    {
+        List<int> temperatures = new List<int>();
+        int invalides = 0;
+        int valeur = 0;
+
+        Console.WriteLine("Saisis des températures (-999 pour arrêter) :");
+
+        while (valeur != -999)
+        {
+            valeur = int.Parse(Console.ReadLine());
+
+            if (valeur == -999)
+                break;
+
+            if (valeur >= -50 && valeur <= 50)
+                temperatures.Add(valeur);
+            else
+                invalides++;
+        }
+
+        Console.WriteLine("Valides : " + temperatures.Count);
+        Console.WriteLine("Invalides : " + invalides);
+
+        if (temperatures.Count > 0)
+        {
+            Console.WriteLine("Min : " + temperatures[0]);
+            Console.WriteLine("Max : " + temperatures[0]);
+
+            int min = temperatures[0];
+            int max = temperatures[0];
+
+            foreach (int t in temperatures)
+            {
+                if (t < min) min = t;
+                if (t > max) max = t;
+            }
+
+            Console.WriteLine("Min réel : " + min);
+            Console.WriteLine("Max réel : " + max);
+        }
+    }
+}
