@@ -1,0 +1,34 @@
+    static void Main(string[] args)
+    {
+        // liste pour stock les mots
+        List<string> mots = new List<string>();
+
+        string saisie = "";
+
+        Console.WriteLine("Saisis des mots. Tape 'stop' pour arrêter.");
+
+        // si on tape pas stop on arrete pas 
+        while (saisie != "stop")
+        {
+            Console.Write("Entre un mot : ");
+            saisie = Console.ReadLine();
+
+           
+            if (saisie != "stop")
+            {
+                mots.Add(saisie);
+            }
+        }
+
+        // Affiche des nombre
+        Console.WriteLine();
+        Console.WriteLine("Tu as saisi " + mots.Count + " mot(s).");
+
+        // Affichage de tous les mots
+        Console.WriteLine("Voici les mots :");
+        foreach (string mot in mots)
+        {
+            Console.WriteLine("- " + mot);
+        }
+    }
+}
