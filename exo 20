@@ -1,0 +1,94 @@
+(cas1) exo 20
+
+class Program
+{
+    static void Main()
+    {
+        SortedSet<string> participants = new SortedSet<string>();
+
+        // ajout des participants
+        participants.Add("zywoo");
+        participants.Add("simple");
+        participants.Add("kenny's");
+        participants.Add("derke");
+        participants.Add("niko");
+
+        // Afficher le tri
+        Console.WriteLine("Liste des participants :");
+        foreach (string p in participants)
+        {
+            Console.WriteLine(p);
+        }
+
+        // Vérification des participants
+        Console.WriteLine();
+        Console.Write("Pseudo à vérifier : ");
+        string recherche = Console.ReadLine();
+
+        if (participants.Contains(recherche))
+            Console.WriteLine("Ce joueur est inscrit.");
+        else
+            Console.WriteLine("Ce joueur n'est pas inscrit à cette compétition.");
+    }
+}
+
+cas (2) 
+
+class Program
+{
+    static void Main()
+    {
+        Queue<string> file = new Queue<string>();
+
+        // ajout des clients
+        file.Enqueue("tom");
+        file.Enqueue("lisa");
+        file.Enqueue("max");
+        file.Enqueue("lola");
+        file.Enqueue("remy");
+
+        Console.WriteLine("Appuyez sur E pour traiter un client. ");
+
+        while (file.Count > 0)
+        {
+            Console.ReadLine();
+
+            string client = file.Dequeue();
+            Console.WriteLine("client en cours : " + client);
+            Console.WriteLine("clients restants : " + file.Count);
+        }
+
+        Console.WriteLine("C'est l'heure de la pause.");
+    }
+}
+
+(cas) 
+
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Dictionary<string, int> notes = new Dictionary<string, int>();
+
+        // ajout des eleves
+        notes.Add("tom", 15);
+        notes.Add("alice", 12);
+        notes.Add("remy", 19);
+        notes.Add("lola", 13);
+
+        // modife de la note du 3eme eleve
+        notes["remy"] = 20;
+
+        // affiche de la note de la derniere eleve
+        Console.WriteLine("note de la derniere eleve lola : " + notes["lola"]);
+
+        Console.WriteLine("\nliste des eleves et leurs notes :");
+        foreach (var pair in notes)
+        {
+            Console.WriteLine(pair.Key + " : " + pair.Value);
+        }
+    }
+}
