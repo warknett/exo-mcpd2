@@ -1,0 +1,34 @@
+using System;
+using System.Linq;
+
+public class InvalidArrayException : Exception
+{
+    public InvalidArrayException(string message) : base(message) { }
+}
+
+class Program
+{
+
+    public static double calculMoyenne(int[] notes)
+    {
+        if (notes.Length == 0)
+            throw new InvalidArrayException("Le tableau de notes ne peut pas être vide");
+
+        if (notes.Any(n => n < 0 || n > 20))
+            throw new ArgumentOutOfRangeException("Les notes doivent être entre 0 et 20.");
+
+        return notes.Average();
+    }
+
+    static void Main()
+    {
+        try
+        {
+            Console.WriteLine(calculMoyenne(new[] { 12, 15, 18 }));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erreur : " + ex.Message);
+        }
+    }
+}
