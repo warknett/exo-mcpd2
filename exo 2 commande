@@ -1,0 +1,298 @@
+public class Client
+{
+    public int ID { get; set; }
+    public string Nom { get; set; }
+    public string Prenom { get; set; }
+    public string Adresse { get; set; }
+    public string CodePostal { get; set; }
+    public string Ville { get; set; }
+    public string Telephone { get; set; }
+}
+
+public class Commande
+{
+    public int ID { get; set; }
+    public int ClientID { get; set; }
+    public DateTime DateCommande { get; set; }
+    public decimal Total { get; set; }
+}
+
+using MySql.Data.MySqlClient;
+
+public static class Database
+{
+    private const string connectionString =
+        "Server=adonet;Database=gestion;Uid=root;Pwd=;";
+
+    public static MySqlConnection GetConnection()
+    {
+        var conn = new MySqlConnection(connectionString);
+        conn.Open();
+        return conn;
+    }
+}
+
+sing MySql.Data.MySqlClient;
+
+namespace MonProjet
+{
+    public static class Database
+    {
+        private const string connectionString =
+            "Server=adonet;Database=gestion;Uid=root;Pwd=;";
+
+        public static MySqlConnection GetConnection()
+        {
+            var conn = new MySqlConnection(connectionString);
+            conn.Open();
+            return conn;
+        }
+    }
+}
+
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+
+public class ClientRepository
+{
+    public List<Client> GetAll()
+    {
+        var clients = new List<Client>();
+        using var conn = Database.GetConnection();
+        string sql = "SELECT * FROM Client";
+        using var cmd = new MySqlCommand(sql, conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            clients.Add(new Client
+            {
+                ID = reader.GetInt32("ID"),
+                Nom = reader.GetString("Nom"),
+                Prenom = reader.GetString("Prenom"),
+                Adresse = reader.GetString("Adresse"),
+                CodePostal = reader.GetString("CodePostal"),
+                Ville = reader.GetString("Ville"),
+                Telephone = reader.GetString("Telephone")
+            });
+        }
+        return clients;
+    }
+
+    public Client GetById(int id)
+    {
+        using var conn = Database.GetConnection();
+        string sql = "SELECT * FROM Client WHERE ID=@ID";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@ID", id);
+        using var reader = cmd.ExecuteReader();
+
+        if (reader.Read())
+        {
+            return new Client
+            {
+                ID = reader.GetInt32("ID"),
+                Nom = reader.GetString("Nom"),
+                Prenom = reader.GetString("Prenom"),
+                Adresse = reader.GetString("Adresse"),
+                CodePostal = reader.GetString("CodePostal"),
+                Ville = reader.GetString("Ville"),
+                Telephone = reader.GetString("Telephone")
+            };
+        }
+        return null;
+    }
+
+    public void Add(Client c)
+    {
+        using var conn = Database.GetConnection();
+        string sql = @"INSERT INTO Client (Nom, Prenom, Adresse, CodePostal, Ville, Telephone)
+                       VALUES (@Nom, @Prenom, @Adresse, @CodePostal, @Ville, @Telephone)";
+        using var cmd = new MySqlCommand(sql, conn);
+
+        cmd.Parameters.AddWithValue("@Nom", c.Nom);
+        cmd.Parameters.AddWithValue("@Prenom", c.Prenom);
+        cmd.Parameters.AddWithValue("@Adresse", c.Adresse);
+        cmd.Parameters.AddWithValue("@CodePostal", c.CodePostal);
+        cmd.Parameters.AddWithValue("@Ville", c.Ville);
+        cmd.Parameters.AddWithValue("@Telephone", c.Telephone);
+
+        cmd.ExecuteNonQuery();
+    }
+
+    public void Update(Client c)
+    {
+        using var conn = Database.GetConnection();
+        string sql = @"UPDATE Client SET Nom=@Nom, Prenom=@Prenom, Adresse=@Adresse,
+                       CodePostal=@CodePostal, Ville=@Ville, Telephone=@Telephone
+                       WHERE ID=@ID";
+        using var cmd = new MySqlCommand(sql, conn);
+
+        cmd.Parameters.AddWithValue("@ID", c.ID);
+        cmd.Parameters.AddWithValue("@Nom", c.Nom);
+        cmd.Parameters.AddWithValue("@Prenom", c.Prenom);
+        cmd.Parameters.AddWithValue("@Adresse", c.Adresse);
+        cmd.Parameters.AddWithValue("@CodePostal", c.CodePostal);
+        cmd.Parameters.AddWithValue("@Ville", c.Ville);
+        cmd.Parameters.AddWithValue("@Telephone", c.Telephone);
+
+        cmd.ExecuteNonQuery();
+    }
+
+    public void Delete(int id)
+    {
+        using var conn = Database.GetConnection();
+        string sql = "DELETE FROM Client WHERE ID=@ID";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@ID", id);
+        cmd.ExecuteNonQuery();
+    }
+}
+
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+
+public class CommandeRepository
+{
+    public void Add(Commande c)
+    {
+        using var conn = Database.GetConnection();
+        string sql = @"INSERT INTO Commandes (ClientID, DateCommande, Total)
+                       VALUES (@ClientID, @DateCommande, @Total)";
+        using var cmd = new MySqlCommand(sql, conn);
+
+        cmd.Parameters.AddWithValue("@ClientID", c.ClientID);
+        cmd.Parameters.AddWithValue("@DateCommande", c.DateCommande);
+        cmd.Parameters.AddWithValue("@Total", c.Total);
+
+        cmd.ExecuteNonQuery();
+    }
+
+    public List<Commande> GetByClient(int clientId)
+    {
+        var list = new List<Commande>();
+        using var conn = Database.GetConnection();
+        string sql = "SELECT * FROM Commandes WHERE ClientID=@ClientID";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@ClientID", clientId);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            list.Add(new Commande
+            {
+                ID = reader.GetInt32("ID"),
+                ClientID = reader.GetInt32("ClientID"),
+                DateCommande = reader.GetDateTime("DateCommande"),
+                Total = reader.GetDecimal("Total")
+            });
+        }
+        return list;
+    }
+}
+
+using System;
+
+class Program
+{
+    static ClientRepository clientRepo = new ClientRepository();
+    static CommandeRepository commandeRepo = new CommandeRepository();
+
+    static void Main()
+    {
+        int choix;
+
+        do
+        {
+            Console.WriteLine(@"
+   ____                                          _           
+  / ___|___  _ __ ___  _ __ ___   __ _ _ __   __| | ___  ___ 
+ | |   / _ \| '_ ` _ \| '_ ` _ \ / _` | '_ \ / _` |/ _ \/ __|
+ | |__| (_) | | | | | | | | | | | (_| | | | | (_| |  __/\__ \
+  \____\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|\__,_|\___||___/
+
+1. Afficher les clients
+2. Créer un client
+3. Modifier un client
+4. Supprimer un client
+5. Afficher les détails d'un client
+6. Ajouter une commande
+0. Quitter
+");
+
+            choix = int.Parse(Console.ReadLine());
+
+            switch (choix)
+            {
+                case 1:
+                    foreach (var c in clientRepo.GetAll())
+                        Console.WriteLine($"{c.ID} - {c.Prenom} {c.Nom}");
+                    break;
+
+                case 2:
+                    var newClient = new Client();
+                    Console.Write("Nom : "); newClient.Nom = Console.ReadLine();
+                    Console.Write("Prénom : "); newClient.Prenom = Console.ReadLine();
+                    Console.Write("Adresse : "); newClient.Adresse = Console.ReadLine();
+                    Console.Write("Code Postal : "); newClient.CodePostal = Console.ReadLine();
+                    Console.Write("Ville : "); newClient.Ville = Console.ReadLine();
+                    Console.Write("Téléphone : "); newClient.Telephone = Console.ReadLine();
+                    clientRepo.Add(newClient);
+                    break;
+
+                case 3:
+                    Console.Write("ID du client à modifier : ");
+                    int idModif = int.Parse(Console.ReadLine());
+                    var client = clientRepo.GetById(idModif);
+                    if (client == null) break;
+
+                    Console.Write("Nouveau nom : "); client.Nom = Console.ReadLine();
+                    clientRepo.Update(client);
+                    break;
+
+                case 4:
+                    Console.Write("ID du client à supprimer : ");
+                    int idSup = int.Parse(Console.ReadLine());
+                    clientRepo.Delete(idSup);
+                    break;
+
+                case 5:
+                    Console.Write("ID du client : ");
+                    int idDetail = int.Parse(Console.ReadLine());
+                    AfficherDetailsClient(idDetail);
+                    break;
+
+                case 6:
+                    Console.Write("ID du client : ");
+                    int idCmd = int.Parse(Console.ReadLine());
+                    var cmd = new Commande();
+                    cmd.ClientID = idCmd;
+                    cmd.DateCommande = DateTime.Now;
+                    Console.Write("Total : ");
+                    cmd.Total = decimal.Parse(Console.ReadLine());
+                    commandeRepo.Add(cmd);
+                    break;
+            }
+
+        } while (choix != 0);
+    }
+
+    public static void AfficherDetailsClient(int id)
+    {
+        var client = clientRepo.GetById(id);
+        if (client == null)
+        {
+            Console.WriteLine("Client introuvable");
+            return;
+        }
+
+        Console.WriteLine($"{client.Prenom} {client.Nom} - {client.Ville}");
+        Console.WriteLine("Commandes :");
+
+        var commandes = commandeRepo.GetByClient(id);
+        foreach (var cmd in commandes)
+        {
+            Console.WriteLine($"Commande #{cmd.ID} - {cmd.DateCommande.ToShortDateString()} - {cmd.Total} €");
+        }
+    }
+}
